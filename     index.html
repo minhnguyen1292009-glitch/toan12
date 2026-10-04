@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<title>Toán 12 — Chương 2 | Hệ trục tọa độ trong không gian</title>
+<style>
+:root{
+ --bg:#060914;--bg2:#0b1020;--text:#f5f7ff;--muted:#aab4ca;
+ --cyan:#55d9ff;--violet:#9a7cff;--pink:#ff72c6;--green:#66e5a5;
+ --line:rgba(255,255,255,.12);--glass:rgba(13,19,38,.72);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;color:var(--text);background:var(--bg)}
+.deck{width:100vw;height:100svh;position:relative;overflow:hidden}
+.bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;background:
+ radial-gradient(circle at 15% 15%,rgba(85,217,255,.12),transparent 28%),
+ radial-gradient(circle at 85% 80%,rgba(154,124,255,.12),transparent 32%),
+ linear-gradient(135deg,#060914,#090d1b 55%,#060914)}
+.orb{position:absolute;border-radius:50%;filter:blur(50px);opacity:.23;animation:float 9s ease-in-out infinite alternate}
+.o1{width:28vw;height:28vw;background:var(--cyan);left:-8vw;top:15vh}.o2{width:25vw;height:25vw;background:var(--violet);right:-6vw;bottom:5vh;animation-delay:-4s}
+@keyframes float{to{transform:translate(35px,-25px) scale(1.08)}}
+.slide{position:absolute;inset:0;padding:clamp(28px,6vh,72px) clamp(24px,8vw,120px) 92px;display:none;overflow:auto}
+.slide.active{display:block;animation:enter .65s cubic-bezier(.2,.8,.2,1)}
+@keyframes enter{from{opacity:0;transform:translate3d(45px,0,0) scale(.985)}to{opacity:1;transform:none}}
+.wrap{max-width:1250px;margin:auto;height:100%}
+.center{display:flex;align-items:center;justify-content:center}
+.eyebrow{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);font-weight:800}
+h1{font-size:clamp(42px,7vw,92px);line-height:.98;letter-spacing:-.045em;margin:14px 0 22px}
+h2{font-size:clamp(34px,5vw,64px);line-height:1;letter-spacing:-.035em;margin:10px 0 28px}
+h3{font-size:21px;margin:0 0 12px}
+p,li{font-size:clamp(17px,2vw,23px);line-height:1.5}
+.sub{color:var(--muted);max-width:780px}
+.gradient{background:linear-gradient(100deg,var(--cyan),#fff 48%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.055);padding:9px 14px;border-radius:999px;color:#dce7fb}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(20,29,53,.78),rgba(8,13,28,.65));border-radius:24px;padding:24px;box-shadow:0 18px 60px rgba(0,0,0,.18);backdrop-filter:blur(14px)}
+.card.accent{border-color:rgba(85,217,255,.34)}
+.formula{font-size:clamp(22px,3vw,38px);font-weight:800;letter-spacing:-.02em;padding:18px 20px;margin:15px 0;border-radius:16px;background:rgba(85,217,255,.065);border:1px solid rgba(85,217,255,.16);color:#eafaff}
+.tag{color:var(--cyan);font-weight:800}.green{color:var(--green)}.violet{color:#c7bbff}
+.reveal>*{opacity:0;transform:translateY(18px);animation:reveal .65s forwards}
+.reveal>*:nth-child(2){animation-delay:.08s}.reveal>*:nth-child(3){animation-delay:.16s}.reveal>*:nth-child(4){animation-delay:.24s}.reveal>*:nth-child(5){animation-delay:.32s}
+@keyframes reveal{to{opacity:1;transform:none}}
+.graph{height:360px;min-height:260px}
+svg{width:100%;height:100%}
+.axis{stroke:#62dfff;stroke-width:3;stroke-linecap:round}
+.dash{stroke:#71829e;stroke-width:2;stroke-dasharray:7 8}
+.gridline{stroke:rgba(130,160,200,.15);stroke-width:1}
+.point{fill:#ffd86a;filter:drop-shadow(0 0 7px rgba(255,216,106,.55))}
+.label{fill:#fff;font-size:18px;font-weight:700}
+.controls{position:fixed;z-index:30;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);
+display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--line);background:rgba(6,9,20,.82);backdrop-filter:blur(16px);border-radius:18px;box-shadow:0 15px 45px #0008}
+button{border:0;color:white;background:rgba(255,255,255,.08);width:42px;height:42px;border-radius:12px;font-size:19px;cursor:pointer}
+button:active{transform:scale(.94)}
+#count{min-width:62px;text-align:center;color:#c3cde0;font-size:14px}
+.progress{position:fixed;z-index:31;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));transition:width .45s}
+.kbd{font-size:13px;color:#8996ad}
+.big-number{font-size:clamp(60px,9vw,120px);font-weight:900;line-height:1;color:rgba(255,255,255,.06)}
+.table{width:100%;border-collapse:collapse;font-size:18px}.table th,.table td{padding:13px;border-bottom:1px solid var(--line);text-align:left}.table th{color:var(--cyan)}
+footer{position:absolute;bottom:22px;left:8vw;color:#61718c;font-size:12px}
+@media(max-width:760px){
+ .slide{padding:28px 20px 85px}.grid,.grid3{grid-template-columns:1fr}.card{padding:19px;border-radius:19px}
+ .graph{height:270px}.kbd{display:none}h1{font-size:clamp(43px,13vw,72px)}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="bg"><div class="orb o1"></div><div class="orb o2"></div></div>
+<div class="progress" id="progress"></div>
+
+<section class="slide active">
+ <div class="wrap center reveal">
+  <div>
+   <span class="pill">TOÁN 12&nbsp; • &nbsp;CHƯƠNG 2</span>
+   <h1>HỆ TRỤC TỌA ĐỘ<br><span class="gradient">TRONG KHÔNG GIAN</span></h1>
+   <p class="sub">Từ Oxyz đến vectơ, tích vô hướng, mặt phẳng, đường thẳng và những công cụ giải bài hình học không gian bằng đại số.</p>
+   <p class="kbd">→ / ← chuyển slide &nbsp;•&nbsp; F toàn màn hình &nbsp;•&nbsp; vuốt trái / phải trên iPhone</p>
+  </div>
+ </div>
+</section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">01 / Tư duy cốt lõi</div><h2>Biến hình học thành đại số</h2>
+ <div class="grid">
+  <div class="card accent"><div class="big-number">2D</div><h3>Mặt phẳng</h3><p>Một điểm cần hai tọa độ: <b>(x;y)</b>.</p><div class="formula">M(x;y)</div></div>
+  <div class="card"><div class="big-number">3D</div><h3>Không gian</h3><p>Thêm trục Oz, ta mô tả điểm bằng ba tọa độ.</p><div class="formula">M(x;y;z)</div></div>
+ </div>
+ <p class="sub">Điểm mạnh của tọa độ: những quan hệ hình học như vuông góc, song song, khoảng cách và góc có thể chuyển thành phép tính.</p>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">02 / Hệ trục Oxyz</div><h2>Ba phương vuông góc</h2>
+ <div class="grid">
+  <div class="card"><h3>Thành phần của hệ trục</h3><ul>
+   <li><b>O</b>: gốc tọa độ.</li><li><b>Ox, Oy, Oz</b>: ba trục đôi một vuông góc.</li>
+   <li><b>i⃗, j⃗, k⃗</b>: các vectơ đơn vị.</li></ul>
+   <div class="formula">OM⃗ = x i⃗ + y j⃗ + z k⃗</div>
+  </div>
+  <div class="card graph"><svg viewBox="0 0 600 360">
+   <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3z" fill="#62dfff"/></marker></defs>
+   <g opacity=".65"><path d="M80 285L480 285M80 285L255 105M80 285L80 45" class="axis" marker-end="url(#a)"/></g>
+   <path d="M80 285L345 210" class="dash"/><path d="M345 210L345 285" class="dash"/>
+   <circle cx="345" cy="210" r="7" class="point"/><circle cx="80" cy="285" r="5" class="point"/>
+   <text x="490" y="290" class="label">x</text><text x="262" y="102" class="label">y</text><text x="88" y="48" class="label">z</text>
+   <text x="58" y="315" class="label">O</text><text x="355" y="202" class="label">M(x;y;z)</text>
+  </svg></div>
+ </div></div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">03 / Tọa độ điểm</div><h2>Nhìn tọa độ là nhận ra vị trí</h2>
+ <div class="grid3">
+  <div class="card"><h3>Trên Ox</h3><div class="formula">M(x;0;0)</div><p>y = z = 0</p></div>
+  <div class="card"><h3>Trên Oy</h3><div class="formula">M(0;y;0)</div><p>x = z = 0</p></div>
+  <div class="card"><h3>Trên Oz</h3><div class="formula">M(0;0;z)</div><p>x = y = 0</p></div>
+ </div>
+ <div class="grid" style="margin-top:18px">
+  <div class="card"><h3>Mặt phẳng (Oxy)</h3><div class="formula">z = 0</div></div>
+  <div class="card"><h3>(Oxz) và (Oyz)</h3><div class="formula">y = 0 &nbsp;&nbsp;•&nbsp;&nbsp; x = 0</div></div>
+ </div>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">04 / Vectơ</div><h2>Tọa độ vectơ từ hai điểm</h2>
+ <div class="formula">A(x₁;y₁;z₁), B(x₂;y₂;z₂) → AB⃗ = (x₂−x₁; y₂−y₁; z₂−z₁)</div>
+ <div class="grid">
+  <div class="card"><h3>Độ dài</h3><div class="formula">|a⃗| = √(a₁²+a₂²+a₃²)</div></div>
+  <div class="card"><h3>Cộng & nhân số</h3><p>Thực hiện theo từng tọa độ.</p><div class="formula">λa⃗=(λa₁;λa₂;λa₃)</div></div>
+ </div>
+ <div class="card" style="margin-top:18px"><p><span class="tag">Mẹo:</span> Khi thấy hai điểm A, B, hãy nghĩ ngay đến <b>AB⃗</b>. Đây thường là chiếc cầu nối dữ kiện với công thức.</p></div>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">05 / Tích vô hướng</div><h2>Chiếc chìa khóa của vuông góc</h2>
+ <div class="formula">a⃗·b⃗ = a₁b₁ + a₂b₂ + a₃b₃</div>
+ <div class="grid">
+  <div class="card accent"><h3>Vuông góc</h3><div class="formula">a⃗ ⟂ b⃗ ⇔ a⃗·b⃗ = 0</div><p>Đây là một trong những điều kiện quan trọng nhất khi làm bài Oxyz.</p></div>
+  <div class="card"><h3>Góc giữa hai vectơ</h3><div class="formula">cos θ = (a⃗·b⃗)/(|a⃗||b⃗|)</div><p>Chú ý: hai vectơ phải khác vectơ-không.</p></div>
+ </div>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">06 / Khoảng cách</div><h2>Độ dài đoạn thẳng AB</h2>
+ <div class="card">
+  <div class="formula">AB = √[(x₂−x₁)² + (y₂−y₁)² + (z₂−z₁)²]</div>
+  <p>Đây chính là độ dài của vectơ <b>AB⃗</b>.</p>
+ </div>
+ <div class="card" style="margin-top:18px"><h3>Ví dụ</h3><p>A(1;−2;3), B(4;2;−1)</p>
+  <div class="formula">AB = √(3² + 4² + (−4)²) = <span class="green">√41</span></div>
+ </div>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">07 / Mặt phẳng</div><h2>Phương trình mặt phẳng</h2>
+ <p>Cho mặt phẳng đi qua M₀(x₀;y₀;z₀), có vectơ pháp tuyến <b>n⃗=(A;B;C)</b>.</p>
+ <div class="formula">A(x−x₀)+B(y−y₀)+C(z−z₀)=0</div>
+ <div class="card"><h3>Dạng tổng quát</h3><div class="formula">Ax + By + Cz + D = 0</div><p>với <b>A²+B²+C² ≠ 0</b>.</p></div>
+ <p class="sub">Điểm cần nhớ: <b>(A;B;C)</b> là một vectơ pháp tuyến của mặt phẳng.</p>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">08 / Đường thẳng</div><h2>Điểm + vectơ chỉ phương</h2>
+ <p>Đường thẳng qua M₀(x₀;y₀;z₀), có vectơ chỉ phương u⃗=(a;b;c).</p>
+ <div class="formula">x=x₀+at<br>y=y₀+bt<br>z=z₀+ct</div>
+ <div class="grid">
+  <div class="card"><h3>Phương trình tham số</h3><p>Thay một giá trị t sẽ thu được một điểm trên đường thẳng.</p></div>
+  <div class="card"><h3>Phương trình chính tắc</h3><div class="formula">(x−x₀)/a = (y−y₀)/b = (z−z₀)/c</div></div>
+ </div>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">09 / Ví dụ</div><h2>Giải một bài trong 30 giây</h2>
+ <div class="card">
+  <p><b>Cho A(1;2;−1), B(3;−1;2).</b> Tìm AB⃗ và AB.</p>
+  <div class="formula">① AB⃗ = (3−1;−1−2;2+1)</div>
+  <div class="formula">② AB⃗ = (2;−3;3)</div>
+  <div class="formula">③ AB = √(2²+(-3)²+3²) = <span class="green">√22</span></div>
+ </div>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">10 / Bản đồ kiến thức</div><h2>Toàn chương gói trong một sơ đồ</h2>
+ <div class="grid3">
+  <div class="card"><h3>ĐIỂM</h3><div class="formula">M(x;y;z)</div><p>Vị trí trong Oxyz.</p></div>
+  <div class="card"><h3>VECTƠ</h3><div class="formula">AB⃗=(Δx;Δy;Δz)</div><p>Độ dài • tích vô hướng.</p></div>
+  <div class="card"><h3>ĐỐI TƯỢNG</h3><div class="formula">mp • đt</div><p>Pháp tuyến • chỉ phương.</p></div>
+ </div>
+ <div class="formula">Tọa độ → Vectơ → Tích vô hướng → Phương trình → Khoảng cách / Góc</div>
+ </div></section>
+
+<section class="slide"><div class="wrap reveal">
+ <div class="eyebrow">11 / Chiến thuật</div><h2>4 bước làm bài Oxyz</h2>
+ <div class="grid">
+  <div class="card"><span class="tag">01</span><h3>Xác định đối tượng</h3><p>Điểm? Vectơ? Đường thẳng? Mặt phẳng?</p></div>
+  <div class="card"><span class="tag">02</span><h3>Đổi dữ kiện → tọa độ</h3><p>Tìm vectơ, pháp tuyến hoặc chỉ phương.</p></div>
+  <div class="card"><span class="tag">03</span><h3>Chọn công thức</h3><p>Khoảng cách, tích vô hướng, phương trình...</p></div>
+  <div class="card"><span class="tag">04</span><h3>Kiểm tra</h3><p>Thế lại kết quả và đối chiếu điều kiện hình học.</p></div>
+ </div>
+ </div></section>
+
+<section class="slide"><div class="wrap center reveal">
+ <div style="width:min(850px,100%)">
+  <span class="pill">TỔNG KẾT • CHƯƠNG 2</span>
+  <h2>3 công thức nên thuộc lòng</h2>
+  <div class="formula">Điểm → M(x;y;z)</div>
+  <div class="formula">AB⃗ → (x₂−x₁; y₂−y₁; z₂−z₁)</div>
+  <div class="formula">Vuông góc → a⃗·b⃗ = 0</div>
+  <p class="green"><b>Hiểu bản chất trước — nhớ công thức sau.</b></p>
+ </div>
+ </div></section>
+
+<div class="controls">
+ <button id="prev" aria-label="Slide trước">‹</button>
+ <span id="count">1 / 12</span>
+ <button id="next" aria-label="Slide tiếp">›</button>
+ <button id="fs" aria-label="Toàn màn hình">⛶</button>
+</div>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let index=0, startX=0;
+const count=document.getElementById('count'), progress=document.getElementById('progress');
+function show(n){
+ index=(n+slides.length)%slides.length;
+ slides.forEach((s,i)=>s.classList.toggle('active',i===index));
+ count.textContent=`${index+1} / ${slides.length}`;
+ progress.style.width=((index+1)/slides.length*100)+'%';
+}
+function next(){show(index+1)} function prev(){show(index-1)}
+document.getElementById('next').onclick=next;
+document.getElementById('prev').onclick=prev;
+document.getElementById('fs').onclick=async()=>{
+ try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}
+};
+document.addEventListener('keydown',e=>{
+ if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}
+ if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}
+ if(e.key.toLowerCase()==='f')document.getElementById('fs').click();
+});
+document.addEventListener('touchstart',e=>{startX=e.changedTouches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{
+ const dx=e.changedTouches[0].clientX-startX;
+ if(Math.abs(dx)>55){dx<0?next():prev()}
+},{passive:true});
+show(0);
+</script>
+</body>
+</html>
